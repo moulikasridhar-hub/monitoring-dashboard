@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monitoring Dashboard</title>
+</head>
+<body>
+
+    <h1>Monitoring Dashboard</h1>
+
+    <h3>Filter Logs</h3> 
+
+    <input type="text" id="candidateFilter" placeholder="Candidate Name">
+
+    <input type="text" id="violationFilter" placeholder="Violation Type">
+
+    <button onclick="loadLogs()">Load Logs</button>
+
+    <h3>Monitoring Logs</h3> 
+
+    <ul id="logList"></ul>
+
+    <script>
+        async function loadLogs() {
+            const response = await fetch("http://127.0.0.1:8000/logs");
+            const logs = await response.json();
+
+            const candidate = document
+                .getElementById("candidateFilter")
+                .value
+                .toLowerCase();
+
+            const violation = document
+                .getElementById("violationFilter")
+                .value
+                .toLowerCase();
+
+            const filteredLogs = logs.filter(log =>
+                log.candidate.toLowerCase().includes(candidate) &&
+                log.violation.toLowerCase().includes(violation)
+            );
+
+            const logList = document.getElementById("logList");
+            logList.innerHTML = "";
+
+            filteredLogs.forEach(log => {
+                const li = document.createElement("li");
+                li.textContent =
+                    `${log.candidate} - ${log.violation} - ${log.timestamp}`;
+                logList.appendChild(li);
+            });
+        }
+    </script>
+
+</body>
+</html>
