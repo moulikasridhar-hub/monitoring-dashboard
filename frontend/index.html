@@ -7,7 +7,7 @@
 
     <h1>Monitoring Dashboard</h1>
 
-    <h3>Filter Logs</h3> 
+    <h3>Filter Logs</h3>
 
     <input type="text" id="candidateFilter" placeholder="Candidate Name">
 
@@ -15,9 +15,18 @@
 
     <button onclick="loadLogs()">Load Logs</button>
 
-    <h3>Monitoring Logs</h3> 
+    <h3>Monitoring Logs</h3>
 
-    <ul id="logList"></ul>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Candidate</th>
+                <th>Violation</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody id="logTableBody"></tbody>
+    </table>
 
     <script>
         async function loadLogs() {
@@ -39,14 +48,19 @@
                 log.violation.toLowerCase().includes(violation)
             );
 
-            const logList = document.getElementById("logList");
-            logList.innerHTML = "";
+            const tableBody = document.getElementById("logTableBody");
+            tableBody.innerHTML = "";
 
             filteredLogs.forEach(log => {
-                const li = document.createElement("li");
-                li.textContent =
-                    `${log.candidate} - ${log.violation} - ${log.timestamp}`;
-                logList.appendChild(li);
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${log.candidate}</td>
+                    <td>${log.violation}</td>
+                    <td>${log.timestamp}</td>
+                `;
+
+                tableBody.appendChild(row);
             });
         }
     </script>
