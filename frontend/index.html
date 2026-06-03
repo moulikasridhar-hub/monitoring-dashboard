@@ -1,0 +1,69 @@
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>Monitoring Dashboard</title>
+</head>
+<body>
+
+    <h1>Monitoring Dashboard</h1>
+
+    <h3>Filter Logs</h3>
+
+    <input type="text" id="candidateFilter" placeholder="Candidate Name">
+
+    <input type="text" id="violationFilter" placeholder="Violation Type">
+
+    <button onclick="loadLogs()">Load Logs</button>
+
+    <h3>Monitoring Logs</h3>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Candidate</th>
+                <th>Violation</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody id="logTableBody"></tbody>
+    </table>
+
+    <script>
+        async function loadLogs() {
+            const response = await fetch("http://127.0.0.1:8000/logs");
+            const logs = await response.json();
+
+            const candidate = document
+                .getElementById("candidateFilter")
+                .value
+                .toLowerCase();
+
+            const violation = document
+                .getElementById("violationFilter")
+                .value
+                .toLowerCase();
+
+            const filteredLogs = logs.filter(log =>
+                log.candidate.toLowerCase().includes(candidate) &&
+                log.violation.toLowerCase().includes(violation)
+            );
+
+            const tableBody = document.getElementById("logTableBody");
+            tableBody.innerHTML = "";
+
+            filteredLogs.forEach(log => {
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${log.candidate}</td>
+                    <td>${log.violation}</td>
+                    <td>${log.timestamp}</td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
+
+</body>
+</html>
